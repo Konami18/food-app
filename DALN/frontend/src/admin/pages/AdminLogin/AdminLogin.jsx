@@ -10,7 +10,7 @@ const AdminLogin = () => {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const url = "http://localhost:4000";
+    const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();

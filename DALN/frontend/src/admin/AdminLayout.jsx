@@ -19,7 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./AdminLayout.css";
 
 const AdminLayout = () => {
-    const url = "http://localhost:4000";
+    const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
     return (
         <div className="admin-layout">

@@ -10,8 +10,7 @@ const StoreProvider = (props) => {
     );
     const [food_list, setFoodList] = useState([]);
 
-    const url = "http://localhost:4000";
-
+    const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
     // Thêm món vào giỏ hàng
     const addToCart = async (itemId) => {
         setCartItems((prev) => ({
