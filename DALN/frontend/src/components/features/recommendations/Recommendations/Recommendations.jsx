@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import './Recommendations.css';
 import { StoreContext } from '../../../../context/StoreContext';
@@ -22,7 +23,7 @@ const Recommendations = ({ type = 'personalized', foodId = null }) => {
             switch (type) {
                 case 'personalized':
                     if (!token) {
-                        // If not logged in, show trending
+                        // Nếu chưa đăng nhập, hiển thị các món ăn thịnh hành
                         response = await axios.get(`${url}/api/recommendation/trending`);
                     } else {
                         response = await axios.post(
@@ -60,7 +61,7 @@ const Recommendations = ({ type = 'personalized', foodId = null }) => {
 
             setLoading(false);
         } catch (error) {
-            console.error("Error fetching recommendations:", error);
+            console.error("Lỗi khi tải danh sách gợi ý:", error);
             setLoading(false);
         }
     };
@@ -72,15 +73,15 @@ const Recommendations = ({ type = 'personalized', foodId = null }) => {
     const getTitle = () => {
         switch (type) {
             case 'personalized':
-                return token ? ' Recommended For You' : ' Trending Now';
+                return token ? 'Gợi ý dành cho bạn' : 'Món ăn thịnh hành';
             case 'trending':
-                return ' Trending Now';
+                return 'Món ăn thịnh hành';
             case 'similar':
-                return ' You Might Also Like';
+                return 'Có thể bạn cũng thích';
             case 'frequently-bought':
-                return ' Frequently Bought Together';
+                return 'Thường được mua cùng nhau';
             default:
-                return ' Recommendations';
+                return 'Gợi ý món ăn';
         }
     };
 
@@ -88,7 +89,9 @@ const Recommendations = ({ type = 'personalized', foodId = null }) => {
         return (
             <div className='recommendations-section'>
                 <h3>{getTitle()}</h3>
-                <div className='loading-recommendations'>Loading recommendations...</div>
+                <div className='loading-recommendations'>
+                    Đang tải danh sách gợi ý...
+                </div>
             </div>
         );
     }
@@ -101,7 +104,9 @@ const Recommendations = ({ type = 'personalized', foodId = null }) => {
         <div className='recommendations-section'>
             <h3>
                 {getTitle()}
-                {reason && <span className='recommendation-reason'>({reason})</span>}
+                {reason && (
+                    <span className='recommendation-reason'>({reason})</span>
+                )}
             </h3>
 
             <div className='recommendations-grid'>
@@ -116,13 +121,23 @@ const Recommendations = ({ type = 'personalized', foodId = null }) => {
                             alt={item.name}
                             className='recommendation-image'
                         />
+
                         <div className='recommendation-info'>
-                            <div className='recommendation-name'>{item.name}</div>
-                            <div className='recommendation-category'>{item.category}</div>
-                            <div className='recommendation-price'>{item.price.toLocaleString('vi-VN')}$</div>
+                            <div className='recommendation-name'>
+                                {item.name}
+                            </div>
+
+                            <div className='recommendation-category'>
+                                {item.category}
+                            </div>
+
+                            <div className='recommendation-price'>
+                                {(item.price * 1000).toLocaleString('vi-VN')}₫
+                            </div>
+
                             {item.averageRating && (
                                 <div className='recommendation-rating'>
-                                    ⭐ {item.averageRating} ({item.totalReviews || 0})x
+                                    ⭐ {item.averageRating} ({item.totalReviews || 0} đánh giá)
                                 </div>
                             )}
                         </div>

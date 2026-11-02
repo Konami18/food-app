@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import './Favorites.css';
 import { StoreContext } from '../../context/StoreContext';
@@ -29,7 +30,7 @@ const Favorites = ({ setShowLogin }) => {
                 setFavorites(response.data.data);
             }
         } catch (error) {
-            console.log("Error fetching favorites:", error);
+            console.log("Lỗi khi tải danh sách món ăn yêu thích:", error);
         } finally {
             setLoading(false);
         }
@@ -38,8 +39,10 @@ const Favorites = ({ setShowLogin }) => {
     if (loading) {
         return (
             <div className='favorites'>
-                <h2>My Favorites</h2>
-                <p style={{ textAlign: 'center', padding: '40px' }}>Loading...</p>
+                <h2>Món ăn yêu thích</h2>
+                <p style={{ textAlign: 'center', padding: '40px' }}>
+                    Đang tải...
+                </p>
             </div>
         );
     }
@@ -49,9 +52,11 @@ const Favorites = ({ setShowLogin }) => {
             <div className='favorites'>
                 <div className='login-prompt-favorites'>
                     <div style={{ fontSize: '60px', marginBottom: '20px' }}>❤️</div>
-                    <h3>Login to see your favorites</h3>
-                    <p>Save your favorite dishes and order them anytime!</p>
-                    <button onClick={() => setShowLogin(true)}>Login Now</button>
+                    <h3>Đăng nhập để xem món ăn yêu thích</h3>
+                    <p>Hãy lưu lại những món ăn yêu thích để dễ dàng tìm và đặt món bất cứ lúc nào!</p>
+                    <button onClick={() => setShowLogin(true)}>
+                        Đăng nhập ngay
+                    </button>
                 </div>
             </div>
         );
@@ -59,13 +64,14 @@ const Favorites = ({ setShowLogin }) => {
 
     return (
         <div className='favorites'>
-            <h2>❤️ My Favorite Dishes</h2>
+            <h2>❤️ Món ăn yêu thích</h2>
 
             {favorites.length > 0 ? (
                 <>
                     <p className='favorites-count'>
-                        You have <strong>{favorites.length}</strong> favorite dish{favorites.length !== 1 ? 'es' : ''}
+                        Bạn có <strong>{favorites.length}</strong> món ăn yêu thích
                     </p>
+
                     <div className='favorites-grid'>
                         {favorites.map((item, index) => (
                             <FoodItem
@@ -82,10 +88,13 @@ const Favorites = ({ setShowLogin }) => {
             ) : (
                 <div className='empty-favorites'>
                     <div className='empty-favorites-icon'>💔</div>
-                    <h3>No favorites yet</h3>
-                    <p>Start adding your favorite dishes to find them easily later!</p>
-                    <button className='browse-menu-btn' onClick={() => navigate('/')}>
-                        Browse Menu
+                    <h3>Bạn chưa có món ăn yêu thích nào</h3>
+                    <p>Hãy thêm những món ăn yêu thích để dễ dàng tìm lại và đặt hàng trong những lần tiếp theo nhé!</p>
+                    <button
+                        className='browse-menu-btn'
+                        onClick={() => navigate('/')}
+                    >
+                        Khám phá thực đơn
                     </button>
                 </div>
             )}

@@ -1,3 +1,4 @@
+
 import React from 'react'
 import './Sidebar.css'
 import { assets } from '../../../assets/assets'
@@ -7,40 +8,48 @@ const Sidebar = () => {
   return (
     <div className='sidebar'>
       <div className="sidebar-options">
-        <NavLink to='/' className="sidebar-option">
+
+        <NavLink to='/admin' end className="sidebar-option">
           <img src={assets.order_icon} alt="" />
-          <p>Dashboard</p>
+          <p>Tổng quan</p>
         </NavLink>
-        <NavLink to='/add' className="sidebar-option">
+
+        <NavLink to='/admin/add' className="sidebar-option">
           <img src={assets.add_icon} alt="" />
-          <p>Add Item</p>
+          <p>Thêm món ăn</p>
         </NavLink>
-        <NavLink to='/list' className="sidebar-option">
+
+        <NavLink to='/admin/list' className="sidebar-option">
           <img src={assets.order_icon} alt="" />
-          <p>List Item</p>
+          <p>Danh sách món ăn</p>
         </NavLink>
-        <NavLink to='/orders' className="sidebar-option">
+
+        <NavLink to='/admin/orders' className="sidebar-option">
           <img src={assets.order_icon} alt="" />
-          <p>Orders</p>
+          <p>Đơn hàng</p>
         </NavLink>
-        <NavLink to='/promo' className="sidebar-option">
+
+        <NavLink to='/admin/promo' className="sidebar-option">
           <img src={assets.add_icon} alt="" />
-          <p>Promo Codes</p>
+          <p>Mã khuyến mãi</p>
         </NavLink>
-        <NavLink to='/flashsale' className="sidebar-option">
+
+        <NavLink to='/admin/flashsale' className="sidebar-option">
           <img src={assets.order_icon} alt="" />
-          <p>Flash Sales</p>
+          <p>Khuyến mãi chớp nhoáng</p>
         </NavLink>
-        <NavLink to='/reviews' className="sidebar-option">
+
+        <NavLink to='/admin/reviews' className="sidebar-option">
           <img src={assets.order_icon} alt="" />
-          <p>Reviews</p>
+          <p>Đánh giá</p>
         </NavLink>
-        <NavLink to='/analytics' className="sidebar-option">
+
+        <NavLink to='/admin/analytics' className="sidebar-option">
           <img src={assets.order_icon} alt="" />
-          <p>Analytics</p>
+          <p>Thống kê</p>
         </NavLink>
+
       </div>
-      
     </div>
   )
 }

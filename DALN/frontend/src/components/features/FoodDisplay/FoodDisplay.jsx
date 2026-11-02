@@ -66,7 +66,7 @@ const FoodDisplay = ({category, filters}) => {
     
   return (
     <div className='food-display' id='food-display'>
-        <h2>Top dishes near you</h2>
+        <h2>Những món ăn nổi bật gần bạn</h2>
         {filteredFoods.length > 0 ? (
             <>
                 <p style={{textAlign: 'center', color: '#666', marginBottom: '20px'}}>
@@ -87,8 +87,8 @@ const FoodDisplay = ({category, filters}) => {
             </>
         ) : (
             <div style={{textAlign: 'center', padding: '40px', color: '#999'}}>
-                <p style={{fontSize: '18px'}}>No dishes found matching your criteria.</p>
-                <p>Try adjusting your filters.</p>
+                <p style={{fontSize: '18px'}}>Không tìm thấy món ăn nào phù hợp với tiêu chí bạn đã chọn.</p>
+                <p>Hãy thử thay đổi các bộ lọc tìm kiếm.</p>
             </div>
         )}
     </div>

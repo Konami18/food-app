@@ -19,15 +19,31 @@ const List = ({ url }) => {
   }
 
   const removeFood = async (foodId) => {
-    const response = await axios.post(`${url}/api/food/remove`, { id: foodId });
-    await fetchList();
-    if (response.data.success) {
-      toast.success(response.data.message)
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      const response = await axios.post(
+        `${url}/api/food/remove`,
+        { id: foodId },
+        {
+          headers: {
+            token: token
+          }
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        await fetchList();
+      } else {
+        toast.error(response.data.message || "Không thể xóa món ăn");
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Lỗi khi xóa món ăn"
+      );
     }
-    else {
-      toast.error("Error");
-    }
-  }
+  };
 
   useEffect(() => {
     fetchList();

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import './SearchFilter.css';
 
@@ -40,9 +41,9 @@ const SearchFilter = ({ onFilterChange }) => {
         setSortBy('default');
         setPriceRange({ min: '', max: '' });
         setRatingFilter('all');
-        onFilterChange({ 
-            searchTerm: '', 
-            sortBy: 'default', 
+        onFilterChange({
+            searchTerm: '',
+            sortBy: 'default',
             priceRange: { min: '', max: '' },
             ratingFilter: 'all'
         });
@@ -53,7 +54,7 @@ const SearchFilter = ({ onFilterChange }) => {
             <div className='search-bar'>
                 <input
                     type='text'
-                    placeholder='Search for dishes, cuisines, restaurants...'
+                    placeholder='Tìm kiếm món ăn, ẩm thực, nhà hàng...'
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />
@@ -62,30 +63,30 @@ const SearchFilter = ({ onFilterChange }) => {
 
             <div className='filter-options'>
                 <div className='filter-group'>
-                    <label>Sort By:</label>
+                    <label>Sắp xếp theo:</label>
                     <select value={sortBy} onChange={handleSortChange}>
-                        <option value='default'>Default</option>
-                        <option value='price-low'>Price: Low to High</option>
-                        <option value='price-high'>Price: High to Low</option>
-                        <option value='name-asc'>Name: A to Z</option>
-                        <option value='name-desc'>Name: Z to A</option>
-                        <option value='rating'>Rating</option>
+                        <option value='default'>Mặc định</option>
+                        <option value='price-low'>Giá: Từ thấp đến cao</option>
+                        <option value='price-high'>Giá: Từ cao đến thấp</option>
+                        <option value='name-asc'>Tên: A đến Z</option>
+                        <option value='name-desc'>Tên: Z đến A</option>
+                        <option value='rating'>Đánh giá cao nhất</option>
                     </select>
                 </div>
 
                 <div className='filter-group'>
-                    <label>Price Range:</label>
+                    <label>Khoảng giá:</label>
                     <div className='price-range-inputs'>
                         <input
                             type='number'
-                            placeholder='Min'
+                            placeholder='Giá thấp nhất'
                             value={priceRange.min}
                             onChange={(e) => handlePriceChange('min', e.target.value)}
                         />
                         <span>-</span>
                         <input
                             type='number'
-                            placeholder='Max'
+                            placeholder='Giá cao nhất'
                             value={priceRange.max}
                             onChange={(e) => handlePriceChange('max', e.target.value)}
                         />
@@ -93,17 +94,17 @@ const SearchFilter = ({ onFilterChange }) => {
                 </div>
 
                 <div className='filter-group'>
-                    <label>Rating:</label>
+                    <label>Đánh giá:</label>
                     <select value={ratingFilter} onChange={handleRatingChange}>
-                        <option value='all'>All Ratings</option>
-                        <option value='4'>4★ & above</option>
-                        <option value='3'>3★ & above</option>
-                        <option value='2'>2★ & above</option>
+                        <option value='all'>Tất cả đánh giá</option>
+                        <option value='4'>Từ 4★ trở lên</option>
+                        <option value='3'>Từ 3★ trở lên</option>
+                        <option value='2'>Từ 2★ trở lên</option>
                     </select>
                 </div>
 
                 <button className='clear-filters-btn' onClick={clearFilters}>
-                    Clear Filters
+                    Xóa bộ lọc
                 </button>
             </div>
         </div>

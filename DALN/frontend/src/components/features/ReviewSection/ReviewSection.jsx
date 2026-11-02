@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import './ReviewSection.css';
 import { StoreContext } from '../../../context/StoreContext';
@@ -26,7 +27,7 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
                 setTotalReviews(response.data.totalReviews);
             }
         } catch (error) {
-            console.log("Error fetching reviews:", error);
+            console.log("Lỗi khi tải đánh giá:", error);
         }
     };
 
@@ -38,14 +39,14 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
 
     const handleSubmitReview = async (e) => {
         e.preventDefault();
-        
+
         if (!token) {
             setShowLogin(true);
             return;
         }
 
         if (rating === 0) {
-            alert("Please select a rating");
+            alert("Vui lòng chọn số sao đánh giá!");
             return;
         }
 
@@ -54,7 +55,7 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
             formData.append('foodId', foodId);
             formData.append('rating', rating);
             formData.append('comment', comment);
-            
+
             if (images.length > 0) {
                 for (let i = 0; i < images.length; i++) {
                     formData.append('images', images[i]);
@@ -66,7 +67,7 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
             });
 
             if (response.data.success) {
-                alert("Review added successfully!");
+                alert("Đánh giá của bạn đã được gửi thành công!");
                 setRating(0);
                 setComment('');
                 setImages([]);
@@ -76,8 +77,8 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
                 alert(response.data.message);
             }
         } catch (error) {
-            console.log("Error submitting review:", error);
-            alert("Failed to submit review");
+            console.log("Lỗi khi gửi đánh giá:", error);
+            alert("Không thể gửi đánh giá. Vui lòng thử lại!");
         }
     };
 
@@ -87,10 +88,10 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
+        return date.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
         });
     };
 
@@ -111,45 +112,49 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
                 fetchReviews();
             }
         } catch (error) {
-            console.log("Error marking helpful:", error);
+            console.log("Lỗi khi đánh dấu đánh giá hữu ích:", error);
         }
     };
 
     return (
         <div className='review-section'>
-            <h3>Ratings & Reviews</h3>
+            <h3>Đánh giá và nhận xét</h3>
 
             {totalReviews > 0 && (
                 <div className='rating-summary'>
                     <div className='avg-rating'>{averageRating}</div>
                     <div>
-                        <div className='stars'>{renderStars(Math.round(averageRating))}</div>
-                        <div className='total-reviews'>{totalReviews} reviews</div>
+                        <div className='stars'>
+                            {renderStars(Math.round(averageRating))}
+                        </div>
+                        <div className='total-reviews'>
+                            {totalReviews} lượt đánh giá
+                        </div>
                     </div>
                 </div>
             )}
 
             <div className='review-filters'>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                    <option value="newest">Newest First</option>
-                    <option value="helpful">Most Helpful</option>
-                    <option value="rating-high">Highest Rating</option>
-                    <option value="rating-low">Lowest Rating</option>
+                    <option value="newest">Mới nhất</option>
+                    <option value="helpful">Hữu ích nhất</option>
+                    <option value="rating-high">Đánh giá cao nhất</option>
+                    <option value="rating-low">Đánh giá thấp nhất</option>
                 </select>
 
                 <select value={filterRating} onChange={(e) => setFilterRating(e.target.value)}>
-                    <option value="all">All Ratings</option>
-                    <option value="5">5 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="2">2 Stars</option>
-                    <option value="1">1 Star</option>
+                    <option value="all">Tất cả đánh giá</option>
+                    <option value="5">5 sao</option>
+                    <option value="4">4 sao</option>
+                    <option value="3">3 sao</option>
+                    <option value="2">2 sao</option>
+                    <option value="1">1 sao</option>
                 </select>
             </div>
 
             {token ? (
                 <div className='add-review-form'>
-                    <h4>Write a Review</h4>
+                    <h4>Viết đánh giá</h4>
                     <form onSubmit={handleSubmitReview}>
                         <div className='rating-input'>
                             {[1, 2, 3, 4, 5].map((star) => (
@@ -164,12 +169,14 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
                                 </span>
                             ))}
                         </div>
+
                         <textarea
-                            placeholder='Share your experience with this dish...'
+                            placeholder='Hãy chia sẻ trải nghiệm của bạn về món ăn này...'
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             required
                         />
+
                         <input
                             type="file"
                             id="review-images"
@@ -177,13 +184,14 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
                             multiple
                             onChange={(e) => setImages([...e.target.files])}
                         />
-                        <button type='submit'>Submit Review</button>
+
+                        <button type='submit'>Gửi đánh giá</button>
                     </form>
                 </div>
             ) : (
                 <div className='login-prompt'>
-                    <p>Please login to write a review</p>
-                    <button onClick={() => setShowLogin(true)}>Login</button>
+                    <p>Vui lòng đăng nhập để viết đánh giá</p>
+                    <button onClick={() => setShowLogin(true)}>Đăng nhập</button>
                 </div>
             )}
 
@@ -194,44 +202,53 @@ const ReviewSection = ({ foodId, setShowLogin }) => {
                             <div className='review-header'>
                                 <div className='review-user-info'>
                                     <span className='review-user-name'>{review.userName}</span>
-                                    <span className='review-date'>{formatDate(review.createdAt)}</span>
+                                    <span className='review-date'>
+                                        {formatDate(review.createdAt)}
+                                    </span>
                                 </div>
-                                <div className='review-rating'>{renderStars(review.rating)}</div>
+
+                                <div className='review-rating'>
+                                    {renderStars(review.rating)}
+                                </div>
                             </div>
+
                             <p className='review-comment'>{review.comment}</p>
+
                             {review.images && review.images.length > 0 && (
                                 <div className='review-images'>
                                     {review.images.map((img, idx) => (
-                                        <img 
-                                            key={idx} 
-                                            src={`${url}/images/${img}`} 
-                                            alt="Review" 
+                                        <img
+                                            key={idx}
+                                            src={`${url}/images/${img}`}
+                                            alt="Hình ảnh đánh giá"
                                         />
                                     ))}
                                 </div>
                             )}
 
                             <div className='review-actions'>
-                                <button 
+                                <button
                                     className='helpful-btn'
                                     onClick={() => handleMarkHelpful(review._id)}
                                 >
-                                    👍 Helpful ({review.helpfulVotes || 0})
+                                    👍 Hữu ích ({review.helpfulVotes || 0})
                                 </button>
                             </div>
 
                             {review.adminReply && (
                                 <div className='admin-reply'>
-                                    <strong>Restaurant Response:</strong>
+                                    <strong>Phản hồi từ nhà hàng:</strong>
                                     <p>{review.adminReply.message}</p>
-                                    <small>{formatDate(review.adminReply.repliedAt)}</small>
+                                    <small>
+                                        {formatDate(review.adminReply.repliedAt)}
+                                    </small>
                                 </div>
                             )}
                         </div>
                     ))
                 ) : (
                     <div className='no-reviews'>
-                        <p>No reviews yet. Be the first to review!</p>
+                        <p>Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá món ăn này!</p>
                     </div>
                 )}
             </div>

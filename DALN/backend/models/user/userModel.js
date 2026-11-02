@@ -13,14 +13,29 @@ const addressSchema = new mongoose.Schema({
     isDefault: { type: Boolean, default: false }
 });
 
+// const userSchema = new mongoose.Schema({
+//     name: { type: String, required: true },
+//     email: { type: String, required: true, unique: true },
+//     password: { type: String, required: true },
+//     cartData: { type: Object, default: {} },
+//     addresses: [addressSchema],
+//     loyaltyPoints: { type: Number, default: 0 }
+// },{minimize:false})
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
+    },
+
     cartData: { type: Object, default: {} },
     addresses: [addressSchema],
     loyaltyPoints: { type: Number, default: 0 }
-},{minimize:false})
+}, { minimize: false })
 
-const userModel = mongoose.models.user || mongoose.model("user",userSchema);
+const userModel = mongoose.models.user || mongoose.model("user", userSchema);
 export default userModel;

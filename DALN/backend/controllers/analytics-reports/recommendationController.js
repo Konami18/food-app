@@ -128,7 +128,7 @@ const getSimilarItems = async (req, res) => {
         res.json({
             success: true,
             data: similarItems,
-            reason: `Similar to ${food.name}`
+            reason: `Các Món Ăn Tương Tự ${food.name}`
         });
 
     } catch (error) {

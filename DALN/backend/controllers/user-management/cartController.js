@@ -1,56 +1,114 @@
-import userModel from "../../models/user/userModel.js"
 
-// add item to use cart
+import userModel from "../../models/user/userModel.js";
+
+// Thêm món ăn vào giỏ hàng
 const addToCart = async (req, res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
-        let cartData = await userData.cartData;
-        if (!cartData[req.body.itemId]) {
-            cartData[req.body.itemId] = 1
+        const { userId, itemId } = req.body;
+
+        const userData = await userModel.findById(userId);
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy tài khoản người dùng"
+            });
         }
-        else {
-            cartData[req.body.itemId] += 1
+
+        const cartData = userData.cartData || {};
+
+        if (!cartData[itemId]) {
+            cartData[itemId] = 1;
+        } else {
+            cartData[itemId] += 1;
         }
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData });
-        res.json({ success: true, message: "Added To Cart" });
+
+        await userModel.findByIdAndUpdate(userId, { cartData });
+
+        res.json({
+            success: true,
+            message: "Đã thêm món ăn vào giỏ hàng"
+        });
+
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" })
-
-
+        console.log("Lỗi thêm vào giỏ hàng:", error);
+        res.status(500).json({
+            success: false,
+            message: "Không thể thêm món ăn vào giỏ hàng"
+        });
     }
-}
+};
 
-// remove item from user cart
+
+// Xóa một món ăn khỏi giỏ hàng
 const removeFromCart = async (req, res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
-        let cartData = await userData.cartData;
-        if (cartData[req.body.itemId] > 0) {
-            cartData[req.body.itemId] -= 1;
+        const { userId, itemId } = req.body;
+
+        const userData = await userModel.findById(userId);
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy tài khoản người dùng"
+            });
         }
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData });
-        res.json({ success: true, message: "Removed From Cart" })
+
+        const cartData = userData.cartData || {};
+
+        if (cartData[itemId] > 0) {
+            cartData[itemId] -= 1;
+
+            if (cartData[itemId] === 0) {
+                delete cartData[itemId];
+            }
+        }
+
+        await userModel.findByIdAndUpdate(userId, { cartData });
+
+        res.json({
+            success: true,
+            message: "Đã cập nhật giỏ hàng"
+        });
+
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" })
-
-
+        console.log("Lỗi xóa món khỏi giỏ hàng:", error);
+        res.status(500).json({
+            success: false,
+            message: "Không thể cập nhật giỏ hàng"
+        });
     }
-}
+};
 
-//fetch user cart data
+
+// Lấy dữ liệu giỏ hàng
 const getCart = async (req, res) => {
     try {
-        let userData =await userModel.findById(req.body.userId)
-        let cartData=await userData.cartData;
-        res.json({success:true,cartData})
-    } catch (error) {
-        console.log(error);
-        res.json({success:false,message:"Error"})
-        
-        
-    }
-}
+        const userId = req.body.userId;
 
-export { addToCart, removeFromCart, getCart }
+        const userData = await userModel.findById(userId);
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy tài khoản người dùng"
+            });
+        }
+
+        const cartData = userData.cartData || {};
+
+        res.json({
+            success: true,
+            cartData
+        });
+
+    } catch (error) {
+        console.log("Lỗi lấy giỏ hàng:", error);
+        res.status(500).json({
+            success: false,
+            message: "Không thể lấy dữ liệu giỏ hàng"
+        });
+    }
+};
+
+export { addToCart, removeFromCart, getCart };

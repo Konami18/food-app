@@ -1,90 +1,90 @@
 {
   "nav": {
-    "home": "Home",
-    "menu": "Menu",
-    "mobile_app": "Mobile App",
-    "contact": "Contact Us",
-    "sign_in": "Sign In",
-    "orders": "Orders",
-    "favorites": "Favorites",
-    "addresses": "Addresses",
-    "rewards": "Rewards",
-    "logout": "Logout"
+    "home": "Trang chủ",
+    "menu": "Thực đơn",
+    "mobile_app": "Ứng dụng di động",
+    "contact": "Liên hệ",
+    "sign_in": "Đăng nhập",
+    "orders": "Đơn hàng",
+    "favorites": "Yêu thích",
+    "addresses": "Địa chỉ",
+    "rewards": "Điểm thưởng",
+    "logout": "Đăng xuất"
   },
   "header": {
-    "title": "Order your favorite food here",
-    "subtitle": "Choose from a diverse menu featuring a delectable array of dishes crafted with the finest ingredients and culinary expertise. Our mission is to satisfy your cravings and elevate your dining experience, one delicious meal at a time."
+    "title": "Đặt món ăn yêu thích của bạn tại đây",
+    "subtitle": "Lựa chọn từ thực đơn đa dạng với nhiều món ăn hấp dẫn, được chế biến từ những nguyên liệu chất lượng và sự tận tâm trong nghệ thuật ẩm thực. Sứ mệnh của chúng tôi là đáp ứng sở thích ăn uống và nâng tầm trải nghiệm ẩm thực của bạn qua từng bữa ăn thơm ngon."
   },
   "menu": {
-    "explore": "Explore our menu",
-    "subtitle": "Choose from a diverse menu featuring a delectable array of dishes. Our mission is to satisfy your cravings and elevate your dining experience."
+    "explore": "Khám phá thực đơn",
+    "subtitle": "Lựa chọn từ thực đơn đa dạng với nhiều món ăn hấp dẫn. Sứ mệnh của chúng tôi là đáp ứng sở thích ăn uống và nâng tầm trải nghiệm ẩm thực của bạn."
   },
   "food": {
-    "add_to_cart": "Add to Cart",
-    "category": "Category",
-    "description": "Description",
-    "reviews": "Reviews"
+    "add_to_cart": "Thêm vào giỏ hàng",
+    "category": "Danh mục",
+    "description": "Mô tả",
+    "reviews": "Đánh giá"
   },
   "cart": {
-    "title": "Your Cart",
-    "item": "Item",
-    "title_name": "Title",
-    "price": "Price",
-    "quantity": "Quantity",
-    "total": "Total",
-    "subtotal": "Subtotal",
-    "delivery_fee": "Delivery Fee",
-    "proceed_checkout": "Proceed to Checkout",
-    "empty": "Your cart is empty"
+    "title": "Giỏ hàng của bạn",
+    "item": "Món ăn",
+    "title_name": "Tên món",
+    "price": "Giá",
+    "quantity": "Số lượng",
+    "total": "Tổng cộng",
+    "subtotal": "Tạm tính",
+    "delivery_fee": "Phí giao hàng",
+    "proceed_checkout": "Tiến hành thanh toán",
+    "empty": "Giỏ hàng của bạn đang trống"
   },
   "order": {
-    "delivery_info": "Delivery Information",
-    "first_name": "First name",
-    "last_name": "Last name",
-    "email": "Email address",
-    "street": "Street",
-    "city": "City",
-    "state": "State",
-    "zip_code": "Zip code",
-    "country": "Country",
-    "phone": "Phone",
-    "place_order": "Place Order",
-    "my_orders": "My Orders",
-    "track_order": "Track Order"
+    "delivery_info": "Thông tin giao hàng",
+    "first_name": "Tên",
+    "last_name": "Họ",
+    "email": "Địa chỉ email",
+    "street": "Đường",
+    "city": "Thành phố",
+    "state": "Tỉnh / Thành phố",
+    "zip_code": "Mã bưu điện",
+    "country": "Quốc gia",
+    "phone": "Số điện thoại",
+    "place_order": "Đặt hàng",
+    "my_orders": "Đơn hàng của tôi",
+    "track_order": "Theo dõi đơn hàng"
   },
   "rewards": {
-    "title": "Loyalty Rewards",
-    "current_points": "Your Current Points",
-    "how_it_works": "How It Works",
-    "earn_points": "Earn 1 point for every $1 you spend",
-    "redeem": "Redeem Now",
-    "points": "POINTS"
+    "title": "Chương trình khách hàng thân thiết",
+    "current_points": "Điểm hiện tại của bạn",
+    "how_it_works": "Cách thức hoạt động",
+    "earn_points": "Nhận 1 điểm cho mỗi 1 USD chi tiêu",
+    "redeem": "Đổi điểm ngay",
+    "points": "ĐIỂM"
   },
   "recommendations": {
-    "for_you": "Recommended For You",
-    "trending": "Trending Now",
-    "similar": "You Might Also Like",
-    "frequently_bought": "Frequently Bought Together"
+    "for_you": "Gợi ý dành cho bạn",
+    "trending": "Đang được yêu thích",
+    "similar": "Bạn cũng có thể thích",
+    "frequently_bought": "Thường được mua cùng"
   },
   "flash_sale": {
-    "title": "Flash Sale",
-    "ends_in": "Ends in",
-    "days": "Days",
-    "hours": "Hours",
-    "mins": "Mins",
-    "secs": "Secs"
+    "title": "Ưu đãi chớp nhoáng",
+    "ends_in": "Kết thúc sau",
+    "days": "Ngày",
+    "hours": "Giờ",
+    "mins": "Phút",
+    "secs": "Giây"
   },
   "common": {
-    "loading": "Loading...",
-    "search": "Search",
-    "filter": "Filter",
-    "sort": "Sort",
-    "all": "All",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "edit": "Edit",
-    "submit": "Submit",
-    "back": "Back"
+    "loading": "Đang tải...",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "sort": "Sắp xếp",
+    "all": "Tất cả",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "submit": "Gửi",
+    "back": "Quay lại"
   }
 }

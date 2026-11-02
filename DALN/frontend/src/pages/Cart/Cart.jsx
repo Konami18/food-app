@@ -1,12 +1,11 @@
+
 import React, { useContext, useState } from 'react'
 import './Cart.css'
 import { StoreContext } from '../../context/StoreContext'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-
 const Cart = () => {
-
 
   const { cartItems, food_list, removeFromCart, getTotalCartAmount, url, token } = useContext(StoreContext);
   const nagivate = useNavigate();
@@ -17,12 +16,12 @@ const Cart = () => {
 
   const applyPromoCode = async () => {
     if (!token) {
-      alert("Please login to apply promo code");
+      alert("Vui lòng đăng nhập để sử dụng mã khuyến mãi");
       return;
     }
 
     if (!promoCode) {
-      alert("Please enter a promo code");
+      alert("Vui lòng nhập mã khuyến mãi");
       return;
     }
 
@@ -39,15 +38,15 @@ const Cart = () => {
       if (response.data.success) {
         setDiscount(response.data.discount);
         setPromoApplied(true);
-        setPromoMessage(`✓ ${response.data.message} - Saved $${response.data.discount.toFixed(2)}`);
+        setPromoMessage(`✓ ${response.data.message} - Bạn đã tiết kiệm được ${response.data.discount.toLocaleString('vi-VN')}₫`);
       } else {
         setDiscount(0);
         setPromoApplied(false);
         setPromoMessage(`✗ ${response.data.message}`);
       }
     } catch (error) {
-      console.log("Error applying promo:", error);
-      alert("Failed to apply promo code");
+      console.log("Lỗi khi áp dụng mã khuyến mãi:", error);
+      alert("Không thể áp dụng mã khuyến mãi. Vui lòng thử lại!");
     }
   };
 
@@ -60,62 +59,68 @@ const Cart = () => {
     <div className='cart'>
       <div className="cart-items">
         <div className="cart-items-title">
-          <p>Items</p>
-          <p>Title</p>
-          <p>Price</p>
-          <p>Quantity</p>
-          <p>Total</p>
-          <p>Remove</p>
+          <p>Sản phẩm</p>
+          <p>Tên món</p>
+          <p>Giá</p>
+          <p>Số lượng</p>
+          <p>Thành tiền</p>
+          <p>Xóa</p>
         </div>
         <br />
         <hr />
+
         {food_list.map((item, index) => {
           if (cartItems[item._id] > 0) {
             return (
-              <div>
+              <div key={item._id}>
                 <div className='cart-items-title cart-items-item'>
                   <img src={url + "/images/" + item.image} alt="" />
                   <p>{item.name}</p>
-                  <p>{item.price.toLocaleString('vi-VN')}$</p>
+                  <p>{(item.price * 1000).toLocaleString('vi-VN')}₫</p>
                   <p>{cartItems[item._id]}</p>
-                  <p>{(item.price * cartItems[item._id]).toLocaleString('vi-VN')}$</p>
+                  <p>{(item.price * cartItems[item._id] * 1000).toLocaleString('vi-VN')}₫</p>
                   <p onClick={() => removeFromCart(item._id)} className='cross'>x</p>
                 </div>
                 <hr />
               </div>
-
             )
           }
+          return null;
         })}
       </div>
+
       <div className="cart-bottom">
         <div className="cart-total">
-          <h2>Cart Totals</h2>
+          <h2>Tổng tiền giỏ hàng</h2>
           <div>
             <div className="cart-total-details">
-              <p>Subtotal</p>
-              <p>{getTotalCartAmount().toLocaleString('vi-VN')}$</p>
+              <p>Tạm tính</p>
+              <p>{(getTotalCartAmount() * 1000).toLocaleString('vi-VN')}₫</p>
             </div>
             <hr />
+
             <div className="cart-total-details">
-              <p>Delivery Fee</p>
-              <p>{getTotalCartAmount() === 0 ? 0 : (10).toLocaleString('vi-VN')}$</p>
+              <p>Phí giao hàng</p>
+              <p>{getTotalCartAmount() === 0 ? 0 : (10 * 1000).toLocaleString('vi-VN')}₫</p>
             </div>
             <hr />
+
             {discount > 0 && (
               <>
                 <div className="cart-total-details" style={{ color: 'green' }}>
-                  <p>Discount</p>
-                  <p>-{discount.toLocaleString('vi-VN')}$</p>
+                  <p>Giảm giá</p>
+                  <p>-{(discount * 1000).toLocaleString('vi-VN')}₫</p>
                 </div>
                 <hr />
               </>
             )}
+
             <div className="cart-total-details">
-              <b>Total</b>
-              <b>{getFinalTotal().toLocaleString('vi-VN')}$</b>
+              <b>Tổng cộng</b>
+              <b>{(getFinalTotal() * 1000).toLocaleString('vi-VN')}₫</b>
             </div>
           </div>
+
           <button
             onClick={() => nagivate('/order', {
               state: {
@@ -125,12 +130,14 @@ const Cart = () => {
               }
             })}
           >
-            PROCESS TO CHECKOUT
+            TIẾN HÀNH ĐẶT HÀNG
           </button>
         </div>
+
         <div className="cart-promocode">
           <div>
-            <p>If you have a promo code, Enter it here</p>
+            <p>Nếu bạn có mã khuyến mãi, hãy nhập vào đây</p>
+
             {promoMessage && (
               <p style={{
                 color: promoApplied ? 'green' : 'red',
@@ -140,16 +147,18 @@ const Cart = () => {
                 {promoMessage}
               </p>
             )}
+
             <div className='cart-promocode-input'>
               <input
                 type="text"
-                placeholder='Promo code'
+                placeholder='Nhập mã khuyến mãi'
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                 disabled={promoApplied}
               />
+
               <button onClick={applyPromoCode} disabled={promoApplied}>
-                {promoApplied ? 'Applied' : 'Submit'}
+                {promoApplied ? 'Đã áp dụng' : 'Áp dụng'}
               </button>
             </div>
           </div>

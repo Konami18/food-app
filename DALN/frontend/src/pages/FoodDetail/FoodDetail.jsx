@@ -59,7 +59,7 @@ const FoodDetail = ({ setShowLogin }) => {
                     
                     <p className='food-detail-description'>{food.description}</p>
                     
-                    <div className='food-detail-price'>{food.price.toLocaleString('vi-VN')}$</div>
+                    <div className='food-detail-price'>{(food.price * 1000).toLocaleString('vi-VN')}đ</div>
                     
                     <div className='food-detail-actions'>
                         {!cartItems[id] ? (

@@ -1,10 +1,10 @@
+
 import React, { useContext, useEffect, useState } from 'react'
 import './PlaceOrder.css'
 import { StoreContext } from '../../context/StoreContext';
 import axios from "axios"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import QRPayment from '../../components/common/QRPayment/QRPayment';
-import { useLocation } from "react-router-dom";
 
 const PlaceOrder = () => {
 
@@ -41,7 +41,8 @@ const PlaceOrder = () => {
       });
       if (response.data.success) {
         setSavedAddresses(response.data.data);
-        // Auto-select default address
+
+        // Tự động chọn địa chỉ mặc định
         const defaultAddr = response.data.data.find(addr => addr.isDefault);
         if (defaultAddr && !useNewAddress) {
           setSelectedAddressId(defaultAddr._id);
@@ -59,7 +60,7 @@ const PlaceOrder = () => {
         }
       }
     } catch (error) {
-      console.log("Error fetching addresses:", error);
+      console.log("Lỗi khi tải địa chỉ:", error);
     }
   };
 
@@ -97,20 +98,23 @@ const PlaceOrder = () => {
         orderItems.push(itemInfo);
       }
     })
+
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + 10, // Phí ship 10,000 VND
+      amount: getTotalCartAmount() + 10, // Phí giao hàng 10.000 VNĐ
     }
+
     let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
+
     if (response.data.success) {
-      // Lấy paymentInfo từ backend
+      // Lấy thông tin thanh toán từ backend
       let paymentInfo = response.data.paymentInfo;
 
       // Áp dụng giảm giá
-      paymentInfo.amount = paymentInfo.amount - discount; // discount là số tiền giảm
+      paymentInfo.amount = paymentInfo.amount - discount;
 
-      // Set paymentData với amount đã giảm
+      // Lưu thông tin thanh toán sau khi giảm giá
       setPaymentData({
         qrCode: response.data.qrCode,
         paymentInfo: paymentInfo,
@@ -119,7 +123,7 @@ const PlaceOrder = () => {
       setShowQRPayment(true);
     }
     else {
-      alert("Error");
+      alert("Đặt hàng thất bại!");
     }
   }
 
@@ -129,8 +133,9 @@ const PlaceOrder = () => {
   const subtotal = location.state?.subtotal || getTotalCartAmount();
   const delivery = subtotal === 0 ? 0 : 10;
 
-  // Tổng tiền cuối cùng
+  // Tổng tiền thanh toán
   const finalTotal = subtotal + delivery - discount;
+
   useEffect(() => {
     if (!token) {
       navigate('/cart')
@@ -139,16 +144,18 @@ const PlaceOrder = () => {
       navigate('/cart')
     }
   }, [token])
+
   return (
-    <form onSubmit={placeOrder} className='place-order' >
+    <form onSubmit={placeOrder} className='place-order'>
       <div className="place-order-left">
-        <p className='title'>Delivery Information</p>
+        <p className='title'>Thông tin giao hàng</p>
 
         {savedAddresses.length > 0 && !useNewAddress && (
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '10px', fontWeight: '500' }}>
-              Select Saved Address:
+              Chọn địa chỉ đã lưu:
             </label>
+
             <select
               value={selectedAddressId}
               onChange={(e) => handleAddressSelect(e.target.value)}
@@ -160,13 +167,14 @@ const PlaceOrder = () => {
                 fontSize: '14px'
               }}
             >
-              <option value="">Choose an address...</option>
+              <option value="">Chọn địa chỉ...</option>
               {savedAddresses.map(addr => (
                 <option key={addr._id} value={addr._id}>
                   {addr.label} - {addr.street}, {addr.city}
                 </option>
               ))}
             </select>
+
             <button
               type="button"
               onClick={() => {
@@ -194,7 +202,7 @@ const PlaceOrder = () => {
                 fontSize: '14px'
               }}
             >
-              + Use New Address
+              + Sử dụng địa chỉ mới
             </button>
           </div>
         )}
@@ -221,62 +229,67 @@ const PlaceOrder = () => {
                   fontSize: '14px'
                 }}
               >
-                ← Use Saved Address
+                ← Sử dụng địa chỉ đã lưu
               </button>
             )}
           </>
         )}
 
         <div className="multi-fields">
-          <input required name='firstName' onChange={onChangeHandler} value={data.firstName} type="text" placeholder='First name' />
-          <input required name='lastName' onChange={onChangeHandler} value={data.lastName} type="text" placeholder='Last name' />
+          <input required name='firstName' onChange={onChangeHandler} value={data.firstName} type="text" placeholder='Họ' />
+          <input required name='lastName' onChange={onChangeHandler} value={data.lastName} type="text" placeholder='Tên' />
         </div>
-        <input required name='email' onChange={onChangeHandler} value={data.email} type="text" placeholder='Email address' />
-        <input required name='street' onChange={onChangeHandler} value={data.street} type="text" placeholder='Street' />
+
+        <input required name='email' onChange={onChangeHandler} value={data.email} type="text" placeholder='Địa chỉ email' />
+        <input required name='street' onChange={onChangeHandler} value={data.street} type="text" placeholder='Địa chỉ đường/phố' />
+
         <div className="multi-fields">
-          <input required name='city' onChange={onChangeHandler} value={data.city} type="text" placeholder='City' />
-          {/* <input required name='state' onChange={onChangeHandler} value={data.state} type="text" placeholder='State' /> */}
+          <input required name='city' onChange={onChangeHandler} value={data.city} type="text" placeholder='Tỉnh/Thành phố' />
         </div>
+
         <div className="multi-fields">
-          {/* <input required name='zipcode' onChange={onChangeHandler} value={data.zipcode} type="text" placeholder='Zip code' /> */}
-          {/* <input required name='country' onChange={onChangeHandler} value={data.country} type="text" placeholder='Country' /> */}
+          {/* Các trường tỉnh, mã bưu điện và quốc gia hiện đang được ẩn */}
         </div>
-        <input required name='phone' onChange={onChangeHandler} value={data.phone} type="text" placeholder='Phone' />
+
+        <input required name='phone' onChange={onChangeHandler} value={data.phone} type="text" placeholder='Số điện thoại' />
       </div>
+
       <div className="place-order-right">
         <div className="cart-total">
-          <h2>Cart Totals</h2>
+          <h2>Tổng tiền giỏ hàng</h2>
+
           <div>
             <div className="cart-total-details">
-              <p>Subtotal</p>
-              <p>{subtotal.toLocaleString('vi-VN')}₫</p>
+              <p>Tạm tính</p>
+              <p>{(subtotal * 1000).toLocaleString('vi-VN')} ₫</p>
             </div>
 
             <hr />
 
             <div className="cart-total-details">
-              <p>Delivery Fee</p>
-              <p>{delivery.toLocaleString('vi-VN')}₫</p>
+              <p>Phí giao hàng</p>
+              <p>{(delivery * 1000).toLocaleString('vi-VN')} ₫</p>
             </div>
 
             <hr />
 
             <div className="cart-total-details">
-              <p>Discount</p>
-              <p>-{discount.toLocaleString('vi-VN')}₫</p>
+              <p>Giảm giá</p>
+              <p>-{(discount * 1000).toLocaleString('vi-VN')} ₫</p>
             </div>
 
             <hr />
 
             <div className="cart-total-details">
-              <b>Total</b>
-              <b>{finalTotal.toLocaleString('vi-VN')}₫</b>
+              <b>Tổng thanh toán</b>
+              <b>{(finalTotal * 1000).toLocaleString('vi-VN')} ₫</b>
             </div>
-
           </div>
-          <button type='submit'>PROCESS TO PAYMENT</button>
+
+          <button type='submit'>TIẾN HÀNH THANH TOÁN</button>
         </div>
       </div>
+
       {showQRPayment && paymentData && (
         <QRPayment
           qrCode={paymentData.qrCode}

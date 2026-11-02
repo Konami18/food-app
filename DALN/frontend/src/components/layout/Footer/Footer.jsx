@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-content-left">
           <img src={assets.logo} alt="Logo" />
-          <p>We bring you delicious, fresh meals prepared with a love for food. Order easily – fast delivery – enjoy the flavors today!</p>
+          <p>Chúng tôi mang đến cho bạn những món ăn thơm ngon, tươi mới, được chế biến bằng tất cả niềm đam mê ẩm thực. Đặt món dễ dàng – giao hàng nhanh chóng – thưởng thức hương vị tuyệt vời ngay hôm nay!</p>
           <div className="footer-social-icons">
             <img src={assets.facebook_icon} alt="Facebook" />
             <img src={assets.twitter_icon} alt="Twitter" />
@@ -17,17 +17,17 @@ const Footer = () => {
         </div>
         <div className="footer-content-center">
           {/* nội dung phần giữa */}
-          <h2>COMPANY</h2>
+          <h2>Công ty</h2>
           <ul>
-            <li>Home</li>
-            <li>About Us</li>
-            <li>Delivery</li>
-            <li>Privacy Policy</li>
+            <li>Trang chủ</li>
+            <li>Giới thiệu</li>
+            <li>Đặt hàng</li>
+            <li>Chính sách bảo mật</li>
           </ul>
         </div>
         <div className="footer-content-right">
           {/* nội dung phần phải */}
-          <h2>GET IN TOUCH</h2>
+          <h2>Liên Hệ</h2>
           <ul>
             <li>0945 - 648 - JQk</li>
             <li>contact@konami.components</li>

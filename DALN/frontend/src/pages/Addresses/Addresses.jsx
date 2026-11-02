@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import './Addresses.css';
 import { StoreContext } from '../../context/StoreContext';
@@ -32,11 +33,12 @@ const Addresses = () => {
             const response = await axios.post(`${url}/api/address/list`, {}, {
                 headers: { token }
             });
+
             if (response.data.success) {
                 setAddresses(response.data.data);
             }
         } catch (error) {
-            console.log("Error fetching addresses:", error);
+            console.log("Lỗi khi tải danh sách địa chỉ:", error);
         }
     };
 
@@ -53,6 +55,7 @@ const Addresses = () => {
 
         try {
             let response;
+
             if (editingId) {
                 response = await axios.post(`${url}/api/address/update`, {
                     addressId: editingId,
@@ -72,8 +75,8 @@ const Addresses = () => {
                 alert(response.data.message);
             }
         } catch (error) {
-            console.log("Error saving address:", error);
-            alert("Failed to save address");
+            console.log("Lỗi khi lưu địa chỉ:", error);
+            alert("Không thể lưu địa chỉ. Vui lòng thử lại!");
         }
     };
 
@@ -90,12 +93,13 @@ const Addresses = () => {
             phone: address.phone,
             isDefault: address.isDefault
         });
+
         setEditingId(address._id);
         setShowForm(true);
     };
 
     const handleDelete = async (addressId) => {
-        if (!window.confirm("Are you sure you want to delete this address?")) {
+        if (!window.confirm("Bạn có chắc chắn muốn xóa địa chỉ này không?")) {
             return;
         }
 
@@ -111,8 +115,8 @@ const Addresses = () => {
                 alert(response.data.message);
             }
         } catch (error) {
-            console.log("Error deleting address:", error);
-            alert("Failed to delete address");
+            console.log("Lỗi khi xóa địa chỉ:", error);
+            alert("Không thể xóa địa chỉ. Vui lòng thử lại!");
         }
     };
 
@@ -128,7 +132,7 @@ const Addresses = () => {
                 alert(response.data.message);
             }
         } catch (error) {
-            console.log("Error setting default:", error);
+            console.log("Lỗi khi thiết lập địa chỉ mặc định:", error);
         }
     };
 
@@ -145,26 +149,33 @@ const Addresses = () => {
             phone: '',
             isDefault: false
         });
+
         setEditingId(null);
         setShowForm(false);
     };
 
     return (
         <div className='addresses-page'>
-            <h2>📍 My Addresses</h2>
+            <h2>📍 Địa chỉ của tôi</h2>
 
             <button className='add-address-btn' onClick={() => setShowForm(true)}>
-                + Add New Address
+                + Thêm địa chỉ mới
             </button>
 
             {addresses.length > 0 ? (
                 <div className='addresses-list'>
                     {addresses.map((address) => (
-                        <div key={address._id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
+                        <div
+                            key={address._id}
+                            className={`address-card ${address.isDefault ? 'default' : ''}`}
+                        >
                             <div className='address-label'>
                                 {address.label}
-                                {address.isDefault && <span className='default-badge'>DEFAULT</span>}
+                                {address.isDefault && (
+                                    <span className='default-badge'>MẶC ĐỊNH</span>
+                                )}
                             </div>
+
                             <div className='address-details'>
                                 <p><strong>{address.firstName} {address.lastName}</strong></p>
                                 <p>{address.street}</p>
@@ -172,26 +183,29 @@ const Addresses = () => {
                                 <p>{address.country}</p>
                                 <p>📞 {address.phone}</p>
                             </div>
+
                             <div className='address-actions'>
                                 {!address.isDefault && (
-                                    <button 
+                                    <button
                                         className='set-default-btn'
                                         onClick={() => handleSetDefault(address._id)}
                                     >
-                                        Set as Default
+                                        Đặt làm mặc định
                                     </button>
                                 )}
-                                <button 
+
+                                <button
                                     className='edit-btn'
                                     onClick={() => handleEdit(address)}
                                 >
-                                    Edit
+                                    Chỉnh sửa
                                 </button>
-                                <button 
+
+                                <button
                                     className='delete-btn'
                                     onClick={() => handleDelete(address._id)}
                                 >
-                                    Delete
+                                    Xóa
                                 </button>
                             </div>
                         </div>
@@ -199,30 +213,32 @@ const Addresses = () => {
                 </div>
             ) : (
                 <div className='no-addresses'>
-                    <p>No addresses saved yet.</p>
-                    <p>Add your first delivery address to make checkout faster!</p>
+                    <p>Bạn chưa lưu địa chỉ nào.</p>
+                    <p>Hãy thêm địa chỉ giao hàng đầu tiên để quá trình đặt hàng nhanh chóng và thuận tiện hơn!</p>
                 </div>
             )}
 
             {showForm && (
                 <div className='address-form-modal' onClick={resetForm}>
                     <div className='address-form' onClick={(e) => e.stopPropagation()}>
-                        <h3>{editingId ? 'Edit Address' : 'Add New Address'}</h3>
+                        <h3>{editingId ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ mới'}</h3>
+
                         <form onSubmit={handleSubmit}>
                             <div className='form-grid'>
                                 <div className='form-field full-width'>
-                                    <label>Label *</label>
+                                    <label>Tên địa chỉ *</label>
                                     <input
                                         type='text'
                                         name='label'
                                         value={formData.label}
                                         onChange={handleInputChange}
-                                        placeholder='e.g., Home, Office, Mom&apos;s House'
+                                        placeholder='Ví dụ: Nhà riêng, Công ty, Nhà mẹ...'
                                         required
                                     />
                                 </div>
+
                                 <div className='form-field'>
-                                    <label>First Name *</label>
+                                    <label>Tên *</label>
                                     <input
                                         type='text'
                                         name='firstName'
@@ -231,8 +247,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div>
+
                                 <div className='form-field'>
-                                    <label>Last Name *</label>
+                                    <label>Họ *</label>
                                     <input
                                         type='text'
                                         name='lastName'
@@ -241,8 +258,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div>
+
                                 <div className='form-field full-width'>
-                                    <label>Street Address *</label>
+                                    <label>Địa chỉ đường phố *</label>
                                     <input
                                         type='text'
                                         name='street'
@@ -251,8 +269,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div>
+
                                 <div className='form-field'>
-                                    <label>City *</label>
+                                    <label>Thành phố *</label>
                                     <input
                                         type='text'
                                         name='city'
@@ -261,8 +280,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div>
+
                                 {/* <div className='form-field'>
-                                    <label>State *</label>
+                                    <label>Tỉnh / Bang *</label>
                                     <input
                                         type='text'
                                         name='state'
@@ -271,8 +291,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div> */}
+
                                 {/* <div className='form-field'>
-                                    <label>Zip Code *</label>
+                                    <label>Mã bưu điện *</label>
                                     <input
                                         type='text'
                                         name='zipcode'
@@ -281,8 +302,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div> */}
+
                                 <div className='form-field'>
-                                    <label>Country *</label>
+                                    <label>Quốc gia *</label>
                                     <input
                                         type='text'
                                         name='country'
@@ -291,8 +313,9 @@ const Addresses = () => {
                                         required
                                     />
                                 </div>
+
                                 <div className='form-field full-width'>
-                                    <label>Phone *</label>
+                                    <label>Số điện thoại *</label>
                                     <input
                                         type='tel'
                                         name='phone'
@@ -302,6 +325,7 @@ const Addresses = () => {
                                     />
                                 </div>
                             </div>
+
                             <div className='checkbox-field'>
                                 <input
                                     type='checkbox'
@@ -310,14 +334,22 @@ const Addresses = () => {
                                     checked={formData.isDefault}
                                     onChange={handleInputChange}
                                 />
-                                <label htmlFor='isDefault'>Set as default address</label>
+                                <label htmlFor='isDefault'>
+                                    Đặt làm địa chỉ mặc định
+                                </label>
                             </div>
+
                             <div className='form-actions'>
                                 <button type='submit' className='save-btn'>
-                                    {editingId ? 'Update Address' : 'Save Address'}
+                                    {editingId ? 'Cập nhật địa chỉ' : 'Lưu địa chỉ'}
                                 </button>
-                                <button type='button' className='cancel-btn' onClick={resetForm}>
-                                    Cancel
+
+                                <button
+                                    type='button'
+                                    className='cancel-btn'
+                                    onClick={resetForm}
+                                >
+                                    Hủy
                                 </button>
                             </div>
                         </form>

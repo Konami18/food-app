@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './Reviews.css';
 import axios from 'axios';
@@ -9,13 +10,26 @@ const Reviews = ({ url }) => {
 
     const fetchReviews = async () => {
         try {
-            const response = await axios.get(`${url}/api/review/all`);
+            const token = localStorage.getItem("adminToken");
+
+            const response = await axios.get(
+                `${url}/api/review/all`,
+                {
+                    headers: {
+                        token: token
+                    }
+                }
+            );
+
             if (response.data.success) {
                 setReviews(response.data.data);
+            } else {
+                toast.error(response.data.message || "Không thể tải danh sách đánh giá");
             }
         } catch (error) {
-            console.error("Error fetching reviews:", error);
-            toast.error("Failed to fetch reviews");
+            toast.error(
+                error.response?.data?.message || "Lỗi khi tải danh sách đánh giá"
+            );
         }
     };
 
@@ -30,18 +44,25 @@ const Reviews = ({ url }) => {
     const handleAddReply = async (reviewId) => {
         const message = replyText[reviewId];
         if (!message || message.trim() === '') {
-            toast.error("Please enter a reply message");
+            toast.error("Vui lòng nhập nội dung phản hồi");
             return;
         }
 
         try {
+            const token = localStorage.getItem("adminToken");
+
             const response = await axios.post(
                 `${url}/api/review/reply/${reviewId}`,
-                { message, adminName: "Restaurant Admin" }
+                { message, adminName: "Restaurant Admin" },
+                {
+                    headers: {
+                        token: token
+                    }
+                }
             );
 
             if (response.data.success) {
-                toast.success("Reply added successfully!");
+                toast.success("Đã gửi phản hồi thành công!");
                 setReplyText(prev => ({ ...prev, [reviewId]: '' }));
                 fetchReviews();
             } else {
@@ -49,26 +70,33 @@ const Reviews = ({ url }) => {
             }
         } catch (error) {
             console.error("Error adding reply:", error);
-            toast.error("Failed to add reply");
+            toast.error("Không thể gửi phản hồi");
         }
     };
 
     const handleDeleteReview = async (reviewId) => {
-        if (!window.confirm("Are you sure you want to delete this review?")) return;
+        if (!window.confirm("Bạn có chắc chắn muốn xóa đánh giá này không?")) return;
 
         try {
+            const token = localStorage.getItem("adminToken");
+
             const response = await axios.post(
                 `${url}/api/review/delete`,
-                { reviewId }
+                { reviewId },
+                {
+                    headers: {
+                        token: token
+                    }
+                }
             );
 
             if (response.data.success) {
-                toast.success("Review deleted successfully!");
+                toast.success("Đã xóa đánh giá thành công!");
                 fetchReviews();
             }
         } catch (error) {
             console.error("Error deleting review:", error);
-            toast.error("Failed to delete review");
+            toast.error("Không thể xóa đánh giá");
         }
     };
 
@@ -78,9 +106,9 @@ const Reviews = ({ url }) => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
+        return date.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
@@ -89,7 +117,7 @@ const Reviews = ({ url }) => {
 
     return (
         <div className='reviews-management'>
-            <h2>⭐ Reviews Management</h2>
+            <h2>Quản lý đánh giá</h2>
 
             <div className='reviews-list'>
                 {reviews.length > 0 ? (
@@ -99,7 +127,7 @@ const Reviews = ({ url }) => {
                                 <div className='review-user-info'>
                                     <span className='review-user-name'>{review.userName}</span>
                                     <span className='review-food-name'>
-                                        {review.foodId?.name || 'Food Item'}
+                                        {review.foodId?.name || 'Món ăn'}
                                     </span>
                                     <span className='review-date'>{formatDate(review.createdAt)}</span>
                                 </div>
@@ -108,60 +136,60 @@ const Reviews = ({ url }) => {
 
                             <div className='review-content'>
                                 <p className='review-comment'>{review.comment}</p>
-                                
+
                                 {review.images && review.images.length > 0 && (
                                     <div className='review-images'>
                                         {review.images.map((img, idx) => (
-                                            <img 
-                                                key={idx} 
-                                                src={`${url}/images/${img}`} 
-                                                alt="Review" 
+                                            <img
+                                                key={idx}
+                                                src={`${url}/images/${img}`}
+                                                alt="Hình ảnh đánh giá"
                                             />
                                         ))}
                                     </div>
                                 )}
 
                                 <div className='review-stats'>
-                                    <span>👍 {review.helpfulVotes || 0} helpful votes</span>
-                                    {review.verified && <span>✓ Verified Purchase</span>}
+                                    <span>👍 {review.helpfulVotes || 0} lượt thấy hữu ích</span>
+                                    {review.verified && <span>✓ Đã xác minh mua hàng</span>}
                                 </div>
                             </div>
 
                             <div className='admin-reply-section'>
                                 {review.adminReply && review.adminReply.message ? (
                                     <div className='existing-reply'>
-                                        <strong>Your Response:</strong>
+                                        <strong>Phản hồi của bạn:</strong>
                                         <p>{review.adminReply.message}</p>
-                                        <small>Replied on {formatDate(review.adminReply.repliedAt)}</small>
+                                        <small>Phản hồi lúc {formatDate(review.adminReply.repliedAt)}</small>
                                     </div>
                                 ) : (
                                     <>
-                                        <h4>Add Response:</h4>
+                                        <h4>Thêm phản hồi:</h4>
                                         <div className='reply-form'>
                                             <textarea
                                                 value={replyText[review._id] || ''}
                                                 onChange={(e) => handleReplyChange(review._id, e.target.value)}
-                                                placeholder="Thank you for your review! We appreciate your feedback..."
+                                                placeholder="Cảm ơn bạn đã đánh giá! Chúng tôi rất trân trọng ý kiến đóng góp của bạn..."
                                             />
                                             <button onClick={() => handleAddReply(review._id)}>
-                                                Send Response
+                                                Gửi phản hồi
                                             </button>
                                         </div>
                                     </>
                                 )}
                             </div>
 
-                            <button 
+                            <button
                                 className='delete-btn'
                                 onClick={() => handleDeleteReview(review._id)}
                             >
-                                Delete Review
+                                Xóa đánh giá
                             </button>
                         </div>
                     ))
                 ) : (
                     <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
-                        No reviews yet
+                        Chưa có đánh giá nào
                     </div>
                 )}
             </div>

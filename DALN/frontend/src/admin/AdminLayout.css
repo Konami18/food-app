@@ -1,0 +1,48 @@
+.admin-layout {
+    width: 100%;
+    min-height: 100vh;
+    background: #fff;
+}
+
+.admin-layout>hr {
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+.app-content {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - 80px);
+}
+
+.app-content>.sidebar {
+    flex: 0 0 230px;
+    width: 230px;
+    min-width: 230px;
+    min-height: calc(100vh - 80px);
+    box-sizing: border-box;
+}
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 20px 20px;
+    box-sizing: border-box;
+}
+
+.admin-main>* {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .app-content>.sidebar {
+        flex-basis: 150px;
+        width: 150px;
+        min-width: 150px;
+    }
+
+    .admin-main {
+        padding: 10px;
+    }
+}

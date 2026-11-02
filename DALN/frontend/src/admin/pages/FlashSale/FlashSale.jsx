@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './FlashSale.css';
 import axios from 'axios';
@@ -16,20 +17,27 @@ const FlashSale = ({ url }) => {
         priority: 0
     });
 
-    // Fetch all flash sales
+    // Lấy danh sách tất cả chương trình Flash Sale
     const fetchFlashSales = async () => {
         try {
-            const response = await axios.get(`${url}/api/flashsale/all`);
+            const token = localStorage.getItem("adminToken");
+
+            const response = await axios.get(`${url}/api/flashsale/all`, {
+                headers: {
+                    token: token
+                }
+            });
+
             if (response.data.success) {
                 setFlashSales(response.data.data);
             }
         } catch (error) {
             console.error("Error fetching flash sales:", error);
-            toast.error("Failed to fetch flash sales");
+            toast.error("Không thể tải danh sách Flash Sale");
         }
     };
 
-    // Fetch all food items
+    // Lấy danh sách tất cả món ăn
     const fetchFoodList = async () => {
         try {
             const response = await axios.get(`${url}/api/food/list`);
@@ -64,18 +72,26 @@ const FlashSale = ({ url }) => {
         e.preventDefault();
 
         if (!formData.title || !formData.discountPercent || !formData.startTime || !formData.endTime) {
-            toast.error("Please fill in all required fields");
+            toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
             return;
         }
 
         try {
+            const token = localStorage.getItem("adminToken");
+
             const response = await axios.post(
                 `${url}/api/flashsale/create`,
-                formData
+                formData,
+                {
+                    headers: {
+                        token: token
+                    }
+                }
             );
 
             if (response.data.success) {
-                toast.success("Flash sale created successfully!");
+                toast.success("Tạo chương trình Flash Sale thành công!");
+
                 setFormData({
                     title: '',
                     description: '',
@@ -85,21 +101,29 @@ const FlashSale = ({ url }) => {
                     foodItems: [],
                     priority: 0
                 });
+
                 fetchFlashSales();
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
             console.error("Error creating flash sale:", error);
-            toast.error("Failed to create flash sale");
+            toast.error("Không thể tạo chương trình Flash Sale");
         }
     };
 
     const handleToggleStatus = async (id) => {
         try {
+            const token = localStorage.getItem("adminToken");
+
             const response = await axios.patch(
                 `${url}/api/flashsale/toggle/${id}`,
-                {}
+                {},
+                {
+                    headers: {
+                        token: token
+                    }
+                }
             );
 
             if (response.data.success) {
@@ -108,25 +132,32 @@ const FlashSale = ({ url }) => {
             }
         } catch (error) {
             console.error("Error toggling status:", error);
-            toast.error("Failed to toggle status");
+            toast.error("Không thể thay đổi trạng thái Flash Sale");
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this flash sale?")) return;
+        if (!window.confirm("Bạn có chắc chắn muốn xóa chương trình Flash Sale này không?")) return;
 
         try {
+            const token = localStorage.getItem("adminToken");
+
             const response = await axios.delete(
-                `${url}/api/flashsale/delete/${id}`
+                `${url}/api/flashsale/delete/${id}`,
+                {
+                    headers: {
+                        token: token
+                    }
+                }
             );
 
             if (response.data.success) {
-                toast.success("Flash sale deleted successfully!");
+                toast.success("Xóa chương trình Flash Sale thành công!");
                 fetchFlashSales();
             }
         } catch (error) {
             console.error("Error deleting flash sale:", error);
-            toast.error("Failed to delete flash sale");
+            toast.error("Không thể xóa chương trình Flash Sale");
         }
     };
 
@@ -143,27 +174,28 @@ const FlashSale = ({ url }) => {
 
     return (
         <div className='flash-sale-admin'>
-            <h2>⚡ Flash Sale Management</h2>
+            <h2>⚡ Quản lý Flash Sale</h2>
 
-            {/* Create Flash Sale Form */}
+            {/* Form tạo chương trình Flash Sale */}
             <div className='create-flash-sale-form'>
-                <h3>Create New Flash Sale</h3>
+                <h3>Tạo chương trình Flash Sale mới</h3>
+
                 <form onSubmit={handleSubmit}>
                     <div className='form-grid'>
                         <div className='form-group'>
-                            <label>Title *</label>
+                            <label>Tên chương trình *</label>
                             <input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleInputChange}
-                                placeholder="e.g., Weekend Special"
+                                placeholder="Ví dụ: Ưu đãi cuối tuần"
                                 required
                             />
                         </div>
 
                         <div className='form-group'>
-                            <label>Discount Percent * (1-100)</label>
+                            <label>Phần trăm giảm giá * (1-100)</label>
                             <input
                                 type="number"
                                 name="discountPercent"
@@ -171,13 +203,13 @@ const FlashSale = ({ url }) => {
                                 onChange={handleInputChange}
                                 min="1"
                                 max="100"
-                                placeholder="e.g., 30"
+                                placeholder="Ví dụ: 30"
                                 required
                             />
                         </div>
 
                         <div className='form-group'>
-                            <label>Start Time *</label>
+                            <label>Thời gian bắt đầu *</label>
                             <input
                                 type="datetime-local"
                                 name="startTime"
@@ -188,7 +220,7 @@ const FlashSale = ({ url }) => {
                         </div>
 
                         <div className='form-group'>
-                            <label>End Time *</label>
+                            <label>Thời gian kết thúc *</label>
                             <input
                                 type="datetime-local"
                                 name="endTime"
@@ -199,7 +231,7 @@ const FlashSale = ({ url }) => {
                         </div>
 
                         <div className='form-group'>
-                            <label>Priority (0-10)</label>
+                            <label>Mức độ ưu tiên (0-10)</label>
                             <input
                                 type="number"
                                 name="priority"
@@ -212,17 +244,18 @@ const FlashSale = ({ url }) => {
                         </div>
 
                         <div className='form-group full-width'>
-                            <label>Description</label>
+                            <label>Mô tả</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleInputChange}
-                                placeholder="Optional description for the flash sale"
+                                placeholder="Nhập mô tả cho chương trình Flash Sale (không bắt buộc)"
                             />
                         </div>
 
                         <div className='form-group full-width'>
-                            <label>Select Food Items (Optional - leave empty for all items)</label>
+                            <label>Chọn món ăn (Không bắt buộc - để trống nếu áp dụng cho tất cả món ăn)</label>
+
                             <div className='food-items-selector'>
                                 {foodList.map((food) => (
                                     <div
@@ -235,7 +268,7 @@ const FlashSale = ({ url }) => {
                                         <input
                                             type="checkbox"
                                             checked={formData.foodItems.includes(food._id)}
-                                            onChange={() => {}}
+                                            onChange={() => { }}
                                         />
                                     </div>
                                 ))}
@@ -244,30 +277,43 @@ const FlashSale = ({ url }) => {
                     </div>
 
                     <button type="submit" className='submit-btn'>
-                        Create Flash Sale
+                        Tạo Flash Sale
                     </button>
                 </form>
             </div>
 
-            {/* Flash Sales List */}
+            {/* Danh sách chương trình Flash Sale */}
             <div className='flash-sales-list'>
-                <h3>All Flash Sales ({flashSales.length})</h3>
+                <h3>Tất cả Flash Sale ({flashSales.length})</h3>
+
                 {flashSales.map((sale) => {
                     const status = getFlashSaleStatus(sale);
+
                     return (
                         <div key={sale._id} className='flash-sale-card'>
                             <div className='flash-sale-card-header'>
                                 <div className='flash-sale-info'>
                                     <h3>{sale.title}</h3>
                                     <p>{sale.description}</p>
-                                    <p><strong>Discount:</strong> {sale.discountPercent}%</p>
-                                    <p><strong>Start:</strong> {new Date(sale.startTime).toLocaleString()}</p>
-                                    <p><strong>End:</strong> {new Date(sale.endTime).toLocaleString()}</p>
-                                    <p><strong>Priority:</strong> {sale.priority}</p>
-                                    <p><strong>Items:</strong> {sale.foodItems.length > 0 ? `${sale.foodItems.length} selected items` : 'All items'}</p>
+                                    <p><strong>Giảm giá:</strong> {sale.discountPercent}%</p>
+                                    <p><strong>Bắt đầu:</strong> {new Date(sale.startTime).toLocaleString('vi-VN')}</p>
+                                    <p><strong>Kết thúc:</strong> {new Date(sale.endTime).toLocaleString('vi-VN')}</p>
+                                    <p><strong>Mức độ ưu tiên:</strong> {sale.priority}</p>
+                                    <p>
+                                        <strong>Món ăn:</strong>{' '}
+                                        {sale.foodItems.length > 0
+                                            ? `${sale.foodItems.length} món đã chọn`
+                                            : 'Tất cả món ăn'}
+                                    </p>
                                 </div>
+
                                 <span className={`flash-sale-status ${status}`}>
-                                    {status.toUpperCase()}
+                                    {{
+                                        inactive: 'ĐÃ TẮT',
+                                        upcoming: 'SẮP DIỄN RA',
+                                        expired: 'ĐÃ KẾT THÚC',
+                                        active: 'ĐANG DIỄN RA'
+                                    }[status]}
                                 </span>
                             </div>
 
@@ -282,9 +328,10 @@ const FlashSale = ({ url }) => {
                                             title={item.name}
                                         />
                                     ))}
+
                                     {sale.foodItems.length > 10 && (
                                         <span style={{ alignSelf: 'center', color: '#666' }}>
-                                            +{sale.foodItems.length - 10} more
+                                            Còn {sale.foodItems.length - 10} món khác
                                         </span>
                                     )}
                                 </div>
@@ -295,13 +342,14 @@ const FlashSale = ({ url }) => {
                                     className='action-btn toggle-btn'
                                     onClick={() => handleToggleStatus(sale._id)}
                                 >
-                                    {sale.isActive ? 'Deactivate' : 'Activate'}
+                                    {sale.isActive ? 'Tắt chương trình' : 'Bật chương trình'}
                                 </button>
+
                                 <button
                                     className='action-btn delete-btn'
                                     onClick={() => handleDelete(sale._id)}
                                 >
-                                    Delete
+                                    Xóa
                                 </button>
                             </div>
                         </div>

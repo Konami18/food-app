@@ -64,7 +64,7 @@ const Rewards = () => {
     if (!token) {
         return (
             <div className='rewards-page'>
-                <h2>Please login to view your rewards</h2>
+                <h2>Vui lòng đăng nhập để xem phần thưởng của bạn</h2>
             </div>
         );
     }
@@ -79,29 +79,29 @@ const Rewards = () => {
 
     return (
         <div className='rewards-page'>
-            <h2>🎁 Loyalty Rewards</h2>
+            <h2>🎁 Phần thưởng khách hàng thân thiết</h2>
 
             {/* Points Banner */}
             <div className='points-banner'>
-                <h3>Your Current Points</h3>
+                <h3>Điểm thưởng hiện tại của bạn</h3>
                 <div className='points-value'>{userPoints}</div>
                 <div className='points-equivalent'>
                     {userPoints >= 100 
                         ? `Worth $${Math.floor(userPoints / 100) * 5} in rewards!`
-                        : `Earn ${100 - userPoints} more points to unlock your first reward`
+                        : 'Cần tích lũy thêm 100 điểm nữa để mở khóa phần thưởng đầu tiên của bạn!'
                     }
                 </div>
             </div>
 
             {/* How it Works */}
             <div className='how-it-works'>
-                <h3>How It Works</h3>
+                <h3>Cách thức hoạt động</h3>
                 <ul>
-                    <li>Earn 1 point for every $1 you spend</li>
-                    <li>Points are automatically added after successful order payment</li>
-                    <li>Redeem points for discount codes to use on future orders</li>
-                    <li>Discount codes are valid for 30 days</li>
-                    <li>Points never expire - save up for bigger rewards!</li>
+                    <li>Nhận 1 điểm cho mỗi 1000đ bạn chi tiêu</li>
+                    <li>Điểm thưởng sẽ được tự động cộng sau khi thanh toán đơn hàng thành công</li>
+                    <li>Đổi điểm thưởng để nhận mã giảm giá sử dụng cho các đơn hàng trong tương lai</li>
+                    <li>Mã giảm giá có hiệu lực trong 30 ngày</li>
+                    <li>Điểm thưởng không bao giờ hết hạn - tích lũy để nhận phần thưởng lớn hơn!</li>
                 </ul>
             </div>
 

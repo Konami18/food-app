@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './Promo.css';
 import axios from 'axios';
@@ -19,12 +20,26 @@ const Promo = ({ url }) => {
 
     const fetchPromos = async () => {
         try {
-            const response = await axios.get(`${url}/api/promo/list`);
+            const token = localStorage.getItem("adminToken");
+
+            const response = await axios.get(
+                `${url}/api/promo/list`,
+                {
+                    headers: {
+                        token: token
+                    }
+                }
+            );
+
             if (response.data.success) {
                 setPromos(response.data.data);
+            } else {
+                toast.error(response.data.message || "Không thể tải danh sách mã khuyến mãi");
             }
         } catch (error) {
-            console.log("Error fetching promos:", error);
+            toast.error(
+                error.response?.data?.message || "Lỗi khi tải danh sách mã khuyến mãi"
+            );
         }
     };
 
@@ -42,12 +57,23 @@ const Promo = ({ url }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
-            const response = await axios.post(`${url}/api/promo/add`, formData);
-            
+            const token = localStorage.getItem("adminToken");
+
+            const response = await axios.post(
+                `${url}/api/promo/add`,
+                formData,
+                {
+                    headers: {
+                        token: token
+                    }
+                }
+            );
+
             if (response.data.success) {
-                toast.success("Promo code created successfully!");
+                toast.success("Tạo mã khuyến mãi thành công!");
+
                 setFormData({
                     code: '',
                     discountType: 'percentage',
@@ -59,27 +85,39 @@ const Promo = ({ url }) => {
                     validUntil: '',
                     description: ''
                 });
+
                 fetchPromos();
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
             console.log("Error creating promo:", error);
-            toast.error("Failed to create promo code");
+            toast.error("Không thể tạo mã khuyến mãi");
         }
     };
 
     const deletePromo = async (id) => {
-        if (window.confirm("Are you sure you want to delete this promo code?")) {
+        if (window.confirm("Bạn có chắc chắn muốn xóa mã khuyến mãi này không?")) {
             try {
-                const response = await axios.post(`${url}/api/promo/delete`, { id });
+                const token = localStorage.getItem("adminToken");
+
+                const response = await axios.post(
+                    `${url}/api/promo/delete`,
+                    { id },
+                    {
+                        headers: {
+                            token: token
+                        }
+                    }
+                );
+
                 if (response.data.success) {
-                    toast.success("Promo code deleted successfully!");
+                    toast.success("Xóa mã khuyến mãi thành công!");
                     fetchPromos();
                 }
             } catch (error) {
                 console.log("Error deleting promo:", error);
-                toast.error("Failed to delete promo code");
+                toast.error("Không thể xóa mã khuyến mãi");
             }
         }
     };
@@ -92,47 +130,52 @@ const Promo = ({ url }) => {
     };
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString('vi-VN', {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
         });
     };
 
+    const formatCurrency = (amount) => {
+        return `${((amount || 0) * 1000).toLocaleString('vi-VN')} ₫`;
+    };
+
     return (
         <div className='promo add flex-col'>
-            <h3>Manage Promo Codes</h3>
+            <h3>Quản lý mã khuyến mãi</h3>
 
             <div className='add-promo-form'>
-                <h4>Create New Promo Code</h4>
+                <h4>Tạo mã khuyến mãi mới</h4>
+
                 <form onSubmit={handleSubmit}>
                     <div className='promo-form-grid'>
                         <div className='promo-form-field'>
-                            <label>Code *</label>
+                            <label>Mã khuyến mãi *</label>
                             <input
                                 type="text"
                                 name="code"
                                 value={formData.code}
                                 onChange={handleInputChange}
-                                placeholder="SAVE20"
+                                placeholder="GIAM20"
                                 required
                             />
                         </div>
 
                         <div className='promo-form-field'>
-                            <label>Discount Type *</label>
+                            <label>Loại giảm giá *</label>
                             <select
                                 name="discountType"
                                 value={formData.discountType}
                                 onChange={handleInputChange}
                             >
-                                <option value="percentage">Percentage (%)</option>
-                                <option value="fixed">Fixed Amount ($)</option>
+                                <option value="percentage">Theo phần trăm (%)</option>
+                                <option value="fixed">Số tiền cố định (VNĐ)</option>
                             </select>
                         </div>
 
                         <div className='promo-form-field'>
-                            <label>Discount Value *</label>
+                            <label>Giá trị giảm giá *</label>
                             <input
                                 type="number"
                                 name="discountValue"
@@ -144,7 +187,7 @@ const Promo = ({ url }) => {
                         </div>
 
                         <div className='promo-form-field'>
-                            <label>Min Order Amount ($)</label>
+                            <label>Giá trị đơn hàng tối thiểu (VNĐ)</label>
                             <input
                                 type="number"
                                 name="minOrderAmount"
@@ -156,30 +199,30 @@ const Promo = ({ url }) => {
 
                         {formData.discountType === 'percentage' && (
                             <div className='promo-form-field'>
-                                <label>Max Discount ($)</label>
+                                <label>Mức giảm tối đa (VNĐ)</label>
                                 <input
                                     type="number"
                                     name="maxDiscount"
                                     value={formData.maxDiscount}
                                     onChange={handleInputChange}
-                                    placeholder="Optional"
+                                    placeholder="Không bắt buộc"
                                 />
                             </div>
                         )}
 
                         <div className='promo-form-field'>
-                            <label>Usage Limit</label>
+                            <label>Giới hạn lượt sử dụng</label>
                             <input
                                 type="number"
                                 name="usageLimit"
                                 value={formData.usageLimit}
                                 onChange={handleInputChange}
-                                placeholder="Unlimited"
+                                placeholder="Không giới hạn"
                             />
                         </div>
 
                         <div className='promo-form-field'>
-                            <label>Valid From *</label>
+                            <label>Thời gian bắt đầu *</label>
                             <input
                                 type="datetime-local"
                                 name="validFrom"
@@ -190,7 +233,7 @@ const Promo = ({ url }) => {
                         </div>
 
                         <div className='promo-form-field'>
-                            <label>Valid Until *</label>
+                            <label>Thời gian kết thúc *</label>
                             <input
                                 type="datetime-local"
                                 name="validUntil"
@@ -201,61 +244,72 @@ const Promo = ({ url }) => {
                         </div>
 
                         <div className='promo-form-field full-width'>
-                            <label>Description</label>
+                            <label>Mô tả</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleInputChange}
-                                placeholder="Get 20% off on all orders above $50"
+                                placeholder="Giảm 20% cho tất cả đơn hàng từ 50.000 VNĐ"
                             />
                         </div>
                     </div>
 
                     <button type='submit' className='promo-submit-btn'>
-                        Create Promo Code
+                        Tạo mã khuyến mãi
                     </button>
                 </form>
             </div>
 
             <div className='promo-list'>
                 <div className='promo-list-header'>
-                    <div>Code</div>
-                    <div>Discount</div>
-                    <div>Min Order</div>
-                    <div>Valid Until</div>
-                    <div>Usage</div>
-                    <div>Status</div>
-                    <div>Action</div>
+                    <div>Mã khuyến mãi</div>
+                    <div>Mức giảm</div>
+                    <div>Đơn tối thiểu</div>
+                    <div>Hạn sử dụng</div>
+                    <div>Lượt dùng</div>
+                    <div>Trạng thái</div>
+                    <div>Thao tác</div>
                 </div>
 
                 {promos.map((promo) => {
                     const status = getPromoStatus(promo);
+
                     return (
                         <div key={promo._id} className='promo-list-item'>
                             <div>
                                 <span className='promo-code'>{promo.code}</span>
                             </div>
+
                             <div>
-                                {promo.discountType === 'percentage' 
-                                    ? `${promo.discountValue}%` 
-                                    : `$${promo.discountValue}`}
+                                {promo.discountType === 'percentage'
+                                    ? `${promo.discountValue}%`
+                                    : formatCurrency(promo.discountValue)}
                             </div>
-                            <div>{promo.minOrderAmount.toLocaleString('vi-VN')}$</div>
+
+                            <div>{formatCurrency(promo.minOrderAmount)}</div>
+
                             <div>{formatDate(promo.validUntil)}</div>
+
                             <div className='promo-used-count'>
                                 {promo.usedCount} / {promo.usageLimit || '∞'}
                             </div>
+
                             <div>
                                 <span className={`promo-status ${status}`}>
-                                    {status.toUpperCase()}
+                                    {{
+                                        inactive: 'ĐÃ TẮT',
+                                        expired: 'HẾT HẠN',
+                                        active: 'ĐANG HOẠT ĐỘNG'
+                                    }[status]}
                                 </span>
                             </div>
+
                             <div>
-                                <button 
+                                <button
                                     className='promo-delete-btn'
                                     onClick={() => deletePromo(promo._id)}
                                 >
-                                    Delete
+                                    Xóa
                                 </button>
                             </div>
                         </div>
